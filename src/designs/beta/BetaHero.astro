@@ -120,8 +120,8 @@ const ticker = [
 			linear-gradient(
 				110deg,
 				transparent 38%,
-				rgba(255, 255, 255, 0.95) 48%,
-				rgba(166, 255, 240, 0.6) 51%,
+				var(--beta-mark-sheen-hi) 48%,
+				var(--beta-mark-sheen-mid) 51%,
 				transparent 60%
 			),
 			var(--beta-chrome);
@@ -142,6 +142,12 @@ const ticker = [
 		color: var(--beta-accent);
 		filter: blur(42px);
 		opacity: 0.55;
+	}
+
+	:global(html[data-theme='light']) .beta-hero__wordmark::after {
+		opacity: 0.4;
+		filter: blur(36px);
+		color: var(--beta-accent-bright);
 	}
 
 	.beta-hero__meta {
