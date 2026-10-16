@@ -5,7 +5,7 @@ export const THEMES = {
 	},
 	light: {
 		name: 'light',
-		themeColor: '#f4f6fc',
+		themeColor: '#eef0f4',
 	},
 } as const;
 
