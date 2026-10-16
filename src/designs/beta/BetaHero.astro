@@ -120,8 +120,8 @@ const ticker = [
 			linear-gradient(
 				110deg,
 				transparent 38%,
-				rgba(255, 255, 255, 0.95) 48%,
-				rgba(166, 255, 240, 0.6) 51%,
+				var(--beta-mark-sheen-hi) 48%,
+				var(--beta-mark-sheen-mid) 51%,
 				transparent 60%
 			),
 			var(--beta-chrome);
@@ -144,6 +144,12 @@ const ticker = [
 		opacity: 0.55;
 	}
 
+	:global(html[data-theme='light']) .beta-hero__wordmark::after {
+		opacity: 0.4;
+		filter: blur(36px);
+		color: var(--beta-accent-bright);
+	}
+
 	.beta-hero__meta {
 		display: flex;
 		flex-wrap: wrap;
@@ -162,7 +168,7 @@ const ticker = [
 		padding: 0.5rem 0.95rem;
 		border: 1px solid var(--beta-line);
 		border-radius: 999px;
-		background: rgba(8, 11, 24, 0.55);
+		background: var(--beta-surface-ink);
 		backdrop-filter: blur(12px);
 		-webkit-backdrop-filter: blur(12px);
 		font-family: var(--beta-mono);
@@ -186,7 +192,7 @@ const ticker = [
 		position: relative;
 		z-index: 1;
 		border-block: 1px solid var(--beta-line-faint);
-		background: rgba(3, 4, 10, 0.6);
+		background: var(--beta-ticker-bg);
 		backdrop-filter: blur(10px);
 		-webkit-backdrop-filter: blur(10px);
 		overflow: hidden;

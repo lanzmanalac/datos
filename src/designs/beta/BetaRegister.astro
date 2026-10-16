@@ -111,15 +111,8 @@ const receipt = [
 		border-radius: var(--beta-radius-lg);
 		background:
 			radial-gradient(120% 90% at 100% 0%, rgba(30, 86, 240, 0.28), transparent 55%),
-			linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.012) 60%),
-			rgba(8, 11, 24, 0.55);
-	}
-
-	:global(.beta.alpha) .register__copy {
-		background:
-			radial-gradient(120% 90% at 100% 0%, rgba(30, 86, 240, 0.34), transparent 58%),
-			linear-gradient(180deg, rgba(255, 255, 255, 0.72), rgba(255, 255, 255, 0.42) 60%),
-			rgba(255, 255, 255, 0.32);
+			linear-gradient(180deg, var(--beta-glass-strong), var(--beta-glass) 60%),
+			var(--beta-surface-ink);
 	}
 
 	.register__copy > :not(.register__rings) {
@@ -273,7 +266,7 @@ const receipt = [
 		z-index: -1;
 		background: conic-gradient(from var(--beta-holo-angle), var(--beta-holo-stops));
 		opacity: 0.16;
-		mix-blend-mode: color-dodge;
+		mix-blend-mode: var(--beta-foil-blend);
 		mask-image: repeating-linear-gradient(
 			115deg,
 			#000 0 2px,
