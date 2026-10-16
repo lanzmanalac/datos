@@ -1,0 +1,29 @@
+---
+import { event } from '../../content/event';
+import { socials } from '../../content/socials';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="beta-footer">
+	<div class="beta-footer__rule" aria-hidden="true"></div>
+	<div class="beta-footer__inner">
+		<div>
+			<p class="beta-footer__brand">{event.organizer}</p>
+			<p class="beta-footer__copy">© {year} {event.organizer}. All rights reserved.</p>
+		</div>
+		<ul class="beta-chip-list">
+			{
+				socials.map((item) => (
+					<li>
+						<a class="beta-chip" href={item.href} rel="noopener noreferrer" target="_blank">
+							{item.label}
+							<span class="beta-chip__arrow" aria-hidden="true">↗</span>
+						</a>
+					</li>
+				))
+			}
+		</ul>
+	</div>
+	<p class="beta-footer__mark" aria-hidden="true">{event.name}</p>
+</footer>

@@ -1,0 +1,83 @@
+---
+import '@fontsource/unbounded/600.css';
+import '@fontsource/unbounded/700.css';
+import '@fontsource/unbounded/800.css';
+import '@fontsource/space-grotesk/500.css';
+import '@fontsource/space-grotesk/600.css';
+import '@fontsource/space-grotesk/700.css';
+import '@fontsource/outfit/400.css';
+import '@fontsource/outfit/500.css';
+import '@fontsource/outfit/600.css';
+import '@fontsource/ibm-plex-mono/400.css';
+import '@fontsource/ibm-plex-mono/500.css';
+import './beta.css';
+import BetaGraph from './BetaGraph.astro';
+
+interface Props {
+	title: string;
+	description: string;
+}
+
+const { title, description } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="description" content={description} />
+		<meta name="theme-color" content="#03040a" />
+		<meta property="og:title" content={title} />
+		<meta property="og:description" content={description} />
+		<title>{title}</title>
+	</head>
+	<body class="beta">
+		<a class="beta-skip" href="#main">Skip to content</a>
+		<div class="beta-backdrop" aria-hidden="true">
+			<div class="beta-backdrop__aurora beta-backdrop__aurora--a"></div>
+			<div class="beta-backdrop__aurora beta-backdrop__aurora--b"></div>
+			<div class="beta-backdrop__grid"></div>
+			<BetaGraph />
+		</div>
+		<div class="beta-grain" aria-hidden="true"></div>
+		<slot name="nav" />
+		<slot />
+		<script>
+			const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+			const nodes = document.querySelectorAll('.beta-reveal');
+			if (!reduce) {
+				const io = new IntersectionObserver(
+					(entries) => {
+						for (const entry of entries) {
+							if (entry.isIntersecting) {
+								entry.target.classList.add('is-in');
+								io.unobserve(entry.target);
+							}
+						}
+					},
+					{ threshold: 0.1 },
+				);
+				nodes.forEach((node) => io.observe(node));
+			} else {
+				nodes.forEach((node) => node.classList.add('is-in'));
+			}
+
+			if (window.matchMedia('(hover: hover)').matches) {
+				document.addEventListener(
+					'pointermove',
+					(event) => {
+						const target = (event.target as Element | null)?.closest<HTMLElement>('[data-spotlight]');
+						if (!target) return;
+						const rect = target.getBoundingClientRect();
+						target.style.setProperty('--mx', `${event.clientX - rect.left}px`);
+						target.style.setProperty('--my', `${event.clientY - rect.top}px`);
+					},
+					{ passive: true },
+				);
+			}
+		</script>
+	</body>
+</html>

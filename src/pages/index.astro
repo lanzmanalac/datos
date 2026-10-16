@@ -1,0 +1,23 @@
+---
+import BetaLayout from '../designs/beta/BetaLayout.astro';
+import BetaNav from '../designs/beta/BetaNav.astro';
+import BetaHero from '../designs/beta/BetaHero.astro';
+import BetaAbout from '../designs/beta/BetaAbout.astro';
+import BetaRegister from '../designs/beta/BetaRegister.astro';
+import BetaSpeakers from '../designs/beta/BetaSpeakers.astro';
+import BetaProgram from '../designs/beta/BetaProgram.astro';
+import BetaFooter from '../designs/beta/BetaFooter.astro';
+import { event } from '../content/event';
+---
+
+<BetaLayout title={`${event.name} · DEP Conference`} description={event.tagline}>
+	<BetaNav slot="nav" home="/" />
+	<main id="main">
+		<BetaHero registerHref="/#register" />
+		<BetaAbout />
+		<BetaRegister />
+		<BetaSpeakers />
+		<BetaProgram />
+	</main>
+	<BetaFooter />
+</BetaLayout>

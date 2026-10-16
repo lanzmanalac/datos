@@ -1,0 +1,270 @@
+---
+import { event } from '../../content/event';
+import { registration } from '../../content/registration';
+
+interface Props {
+	registerHref?: string;
+}
+
+const { registerHref = '/beta/#register' } = Astro.props;
+const status = registration.statusCopy[registration.status];
+
+const ticker = [
+	event.name,
+	event.organizer,
+	event.cityLabel,
+	event.dateLabel,
+	'Ask speakers',
+	'What AI means for your role',
+	status.banner,
+	'Meet people who hire for this',
+];
+---
+
+<section class="beta-hero" id="top" tabindex="-1">
+	<div class="beta-hero__orb" aria-hidden="true"></div>
+
+	<div class="beta-hero__inner">
+		<p class="beta-hero__tagline">— {event.tagline}</p>
+		<h1 class="beta-hero__wordmark" data-text={event.name}>{event.name}</h1>
+		<ul class="beta-hero__meta" aria-label="Event status">
+			<li>
+				<a class="beta-hero__chip beta-hero__chip--status" href={registerHref}>
+					<span class="beta-live" aria-hidden="true"></span>
+					{status.banner}
+				</a>
+			</li>
+			<li class="beta-hero__chip">{event.cityLabel}</li>
+			<li class="beta-hero__chip">{event.dateLabel}</li>
+		</ul>
+	</div>
+
+	<div class="beta-ticker" aria-hidden="true">
+		<div class="beta-ticker__track">
+			{
+				[0, 1].map(() => (
+					<ul class="beta-ticker__group">
+						{ticker.map((item) => (
+							<li>
+								<span class="beta-ticker__diamond" />
+								{item}
+							</li>
+						))}
+					</ul>
+				))
+			}
+		</div>
+	</div>
+</section>
+
+<style>
+	.beta-hero {
+		position: relative;
+		display: grid;
+		grid-template-columns: minmax(0, 1fr);
+		grid-template-rows: 1fr auto;
+		min-height: 100dvh;
+		padding-top: calc(var(--beta-dock-top) + var(--beta-dock-h) + 2rem);
+		text-align: center;
+		overflow: hidden;
+		outline: none;
+	}
+
+	.beta-hero__orb {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		width: min(70vw, 52rem);
+		aspect-ratio: 2 / 1;
+		transform: translate(-50%, -50%);
+		border-radius: 50%;
+		background: radial-gradient(ellipse at center, rgba(30, 86, 240, 0.32), rgba(30, 86, 240, 0.06) 45%, transparent 70%);
+		filter: blur(30px);
+		pointer-events: none;
+	}
+
+	.beta-hero__inner {
+		position: relative;
+		z-index: 1;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		gap: 1.75rem;
+		padding: 2rem 1.5rem 3rem;
+	}
+
+	.beta-hero__tagline {
+		margin: 0;
+		max-width: 62ch;
+		font-family: var(--beta-mono);
+		font-size: clamp(0.72rem, 1.2vw, 0.86rem);
+		font-weight: 500;
+		letter-spacing: 0.16em;
+		text-transform: uppercase;
+		color: var(--beta-ice);
+		text-wrap: balance;
+	}
+
+	.beta-hero__wordmark {
+		position: relative;
+		isolation: isolate;
+		margin: 0;
+		font-family: var(--beta-display);
+		font-weight: 800;
+		font-size: clamp(4rem, 17vw, 14rem);
+		line-height: 0.86;
+		letter-spacing: -0.045em;
+		padding-inline: 0.04em;
+		background:
+			linear-gradient(
+				110deg,
+				transparent 38%,
+				rgba(255, 255, 255, 0.95) 48%,
+				rgba(166, 255, 240, 0.6) 51%,
+				transparent 60%
+			),
+			var(--beta-chrome);
+		background-size: 260% 100%, 100% 100%;
+		background-position: 130% 0, 0 0;
+		background-repeat: no-repeat;
+		-webkit-background-clip: text;
+		background-clip: text;
+		color: transparent;
+	}
+
+	.beta-hero__wordmark::after {
+		content: attr(data-text);
+		position: absolute;
+		inset: 0;
+		z-index: -1;
+		padding-inline: inherit;
+		color: var(--beta-accent);
+		filter: blur(42px);
+		opacity: 0.55;
+	}
+
+	.beta-hero__meta {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
+		gap: 0.5rem;
+		margin: 0.25rem 0 0;
+		padding: 0;
+		list-style: none;
+	}
+
+	.beta-hero__chip,
+	.beta-hero__meta :global(.beta-hero__chip) {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.55rem;
+		padding: 0.5rem 0.95rem;
+		border: 1px solid var(--beta-line);
+		border-radius: 999px;
+		background: rgba(8, 11, 24, 0.55);
+		backdrop-filter: blur(12px);
+		-webkit-backdrop-filter: blur(12px);
+		font-family: var(--beta-mono);
+		font-size: 0.78rem;
+		color: var(--beta-text-dim);
+	}
+
+	.beta-hero__chip--status {
+		color: var(--beta-text);
+		transition:
+			border-color 200ms var(--beta-ease),
+			transform 180ms var(--beta-spring);
+	}
+
+	.beta-hero__chip--status:hover {
+		border-color: rgba(124, 245, 212, 0.5);
+		transform: translateY(-1px);
+	}
+
+	.beta-ticker {
+		position: relative;
+		z-index: 1;
+		border-block: 1px solid var(--beta-line-faint);
+		background: rgba(3, 4, 10, 0.6);
+		backdrop-filter: blur(10px);
+		-webkit-backdrop-filter: blur(10px);
+		overflow: hidden;
+		mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
+		-webkit-mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
+	}
+
+	.beta-ticker__track {
+		display: flex;
+		width: max-content;
+	}
+
+	.beta-ticker__group {
+		display: flex;
+		flex-shrink: 0;
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+
+	.beta-ticker__group li {
+		display: inline-flex;
+		align-items: center;
+		gap: 1.1rem;
+		padding: 0.95rem 1.1rem;
+		font-family: var(--beta-mono);
+		font-size: 0.76rem;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: var(--beta-text-dim);
+		white-space: nowrap;
+	}
+
+	.beta-ticker__diamond {
+		width: 0.4rem;
+		height: 0.4rem;
+		background: var(--beta-accent-bright);
+		transform: rotate(45deg);
+		box-shadow: 0 0 10px var(--beta-accent-bright);
+	}
+
+	@media (prefers-reduced-motion: no-preference) {
+		.beta-hero__tagline,
+		.beta-hero__wordmark,
+		.beta-hero__meta {
+			animation: beta-hero-in 1000ms var(--beta-ease) both;
+		}
+
+		.beta-hero__wordmark {
+			animation:
+				beta-hero-in 1000ms var(--beta-ease) 120ms both,
+				beta-sheen 7s var(--beta-ease) 1.2s infinite;
+		}
+
+		.beta-hero__meta {
+			animation-delay: 280ms;
+		}
+
+		.beta-ticker__track {
+			animation: beta-ticker 42s linear infinite;
+		}
+
+		.beta-ticker:hover .beta-ticker__track {
+			animation-play-state: paused;
+		}
+	}
+
+	@keyframes beta-hero-in {
+		from {
+			opacity: 0;
+			transform: translateY(16px);
+			filter: blur(8px);
+		}
+	}
+
+	@keyframes beta-ticker {
+		to {
+			transform: translateX(-50%);
+		}
+	}
+</style>

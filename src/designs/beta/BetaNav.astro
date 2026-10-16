@@ -1,0 +1,105 @@
+---
+import { event } from '../../content/event';
+import { sectionHref } from '../../lib/site-path';
+
+interface Props {
+	home?: string;
+}
+
+const { home = '/' } = Astro.props;
+
+const links = [
+	{ href: sectionHref(home, 'about'), id: 'about', label: 'About' },
+	{ href: sectionHref(home, 'register'), id: 'register', label: 'Register', cta: true },
+	{ href: sectionHref(home, 'speakers'), id: 'speakers', label: 'Speakers' },
+	{ href: sectionHref(home, 'program'), id: 'program', label: 'Program' },
+];
+---
+
+<header class="beta-nav">
+	<a class="beta-nav__brand beta-nav__brand--mobile" href={home}>{event.name}</a>
+	<nav class="beta-nav__inner" aria-label="Primary">
+		<a class="beta-nav__brand" href={home}>{event.name}</a>
+		{
+			links.map((item) => (
+				<a
+					class:list={['beta-nav__link', item.cta && 'beta-nav__link--cta']}
+					href={item.href}
+					data-nav-section={item.id}
+				>
+					{item.label}
+				</a>
+			))
+		}
+	</nav>
+	<button
+		type="button"
+		class="beta-nav__toggle"
+		data-beta-nav-toggle
+		aria-expanded="false"
+		aria-controls="beta-nav-sheet"
+		aria-label="Open menu"
+	>
+		<span aria-hidden="true"></span>
+	</button>
+</header>
+
+<div class="beta-nav-sheet" id="beta-nav-sheet" data-beta-nav-sheet aria-hidden="true">
+	<nav aria-label="Mobile">
+		<a href={home}>{event.name}</a>
+		<a href={sectionHref(home, 'about')}>About</a>
+		<a href={sectionHref(home, 'speakers')}>Speakers</a>
+		<a href={sectionHref(home, 'program')}>Program</a>
+		<a class="beta-nav__link--cta" href={sectionHref(home, 'register')}>Register</a>
+	</nav>
+</div>
+
+<script>
+	const toggle = document.querySelector('[data-beta-nav-toggle]');
+	const sheet = document.querySelector('[data-beta-nav-sheet]');
+
+	const setOpen = (open: boolean) => {
+		if (!toggle || !sheet) return;
+		toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+		toggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+		sheet.setAttribute('aria-hidden', open ? 'false' : 'true');
+		sheet.classList.toggle('is-open', open);
+		document.body.style.overflow = open ? 'hidden' : '';
+	};
+
+	toggle?.addEventListener('click', () => {
+		const open = toggle.getAttribute('aria-expanded') !== 'true';
+		setOpen(open);
+	});
+
+	sheet?.querySelectorAll('a').forEach((link) => {
+		link.addEventListener('click', () => setOpen(false));
+	});
+
+	document.addEventListener('keydown', (event) => {
+		if (event.key === 'Escape') setOpen(false);
+	});
+
+	const navLinks = document.querySelectorAll<HTMLAnchorElement>('[data-nav-section]');
+	const sections = ['top', ...[...navLinks].map((link) => link.dataset.navSection ?? '')]
+		.map((id) => document.getElementById(id))
+		.filter((el): el is HTMLElement => Boolean(el));
+
+	if (sections.length && 'IntersectionObserver' in window) {
+		const spy = new IntersectionObserver(
+			(entries) => {
+				for (const entry of entries) {
+					if (!entry.isIntersecting) continue;
+					navLinks.forEach((link) => {
+						const current = link.dataset.navSection === entry.target.id;
+						link.classList.toggle('is-current', current);
+						if (current) link.setAttribute('aria-current', 'location');
+						else link.removeAttribute('aria-current');
+					});
+				}
+			},
+			{ rootMargin: '-45% 0px -50% 0px' },
+		);
+		sections.forEach((section) => spy.observe(section));
+	}
+</script>

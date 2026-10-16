@@ -1,0 +1,187 @@
+---
+import { speakersPreview } from '../../content/speakers';
+---
+
+<section class="beta-band beta-speakers" id="speakers" aria-labelledby="speakers-mark" tabindex="-1">
+	<div class="beta-wrap">
+		<p class="beta-mark beta-reveal" id="speakers-mark" data-text="Speakers">Speakers</p>
+		<header class="beta-head beta-reveal">
+			<div>
+				<h2>On the <span class="beta-holo-text">floor</span></h2>
+			</div>
+			<p class="beta-lede">Hear how teams use AI on GCP, then ask what that means for hiring. Names still being confirmed.</p>
+		</header>
+
+		<div class="beta-speaker-stage beta-reveal" style="--d: 100ms" role="list" aria-label="Speakers">
+			{
+				speakersPreview.map((speaker) => (
+					<article class="beta-speaker-panel" role="listitem" tabindex="0" data-spotlight>
+						<div class="beta-speaker-panel__head">
+							<h3 class="beta-speaker-panel__name">{speaker.name}</h3>
+							<p class="beta-speaker-panel__session">{speaker.session}</p>
+							{speaker.org && speaker.org !== 'TBA' && speaker.org !== 'DEP Community' && (
+								<p class="beta-speaker-panel__role">{speaker.org}</p>
+							)}
+						</div>
+
+						<div class="beta-speaker-panel__photo">
+							{
+								speaker.photoSrc ? (
+									<img src={speaker.photoSrc} alt="" width="240" height="240" loading="lazy" />
+								) : (
+									<span class="beta-speaker-panel__placeholder">Photo</span>
+								)
+							}
+						</div>
+
+						<p class="beta-speaker-panel__bio">{speaker.bio}</p>
+					</article>
+				))
+			}
+		</div>
+	</div>
+</section>
+
+<style>
+	.beta-speaker-stage {
+		display: grid;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+		gap: 0.75rem;
+		align-items: stretch;
+	}
+
+	.beta-speaker-panel {
+		position: relative;
+		isolation: isolate;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 1.25rem;
+		padding: 1.75rem 1.5rem 1.85rem;
+		text-align: center;
+		border-radius: var(--beta-radius-lg);
+		border: 1px solid var(--beta-glass-border);
+		background:
+			linear-gradient(180deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.01) 55%),
+			rgba(8, 11, 24, 0.55);
+		backdrop-filter: blur(16px);
+		-webkit-backdrop-filter: blur(16px);
+		box-shadow: var(--beta-shadow);
+		overflow: hidden;
+		outline: none;
+		transition:
+			opacity 380ms var(--beta-ease),
+			filter 380ms var(--beta-ease),
+			transform 420ms var(--beta-spring),
+			border-color 380ms var(--beta-ease),
+			box-shadow 380ms var(--beta-ease);
+	}
+
+	.beta-speaker-panel::before {
+		content: '';
+		position: absolute;
+		inset: 0;
+		z-index: -1;
+		background: radial-gradient(480px circle at var(--mx, 50%) var(--my, 30%), rgba(77, 125, 255, 0.22), transparent 45%);
+		opacity: 0;
+		transition: opacity 380ms var(--beta-ease);
+	}
+
+	.beta-speaker-stage:has(.beta-speaker-panel:hover) .beta-speaker-panel:not(:hover),
+	.beta-speaker-stage:has(.beta-speaker-panel:focus-visible) .beta-speaker-panel:not(:focus-visible) {
+		opacity: 0.35;
+		filter: blur(4px) saturate(0.6);
+		transform: scale(0.98);
+	}
+
+	.beta-speaker-panel:hover,
+	.beta-speaker-panel:focus-visible {
+		opacity: 1;
+		filter: none;
+		transform: translateY(-6px);
+		border-color: rgba(170, 196, 255, 0.35);
+		box-shadow:
+			0 1px 0 rgba(255, 255, 255, 0.1) inset,
+			0 40px 80px -30px rgba(30, 86, 240, 0.55);
+	}
+
+	.beta-speaker-panel:hover::before,
+	.beta-speaker-panel:focus-visible::before {
+		opacity: 1;
+	}
+
+	.beta-speaker-panel__head {
+		width: 100%;
+	}
+
+	.beta-speaker-panel__name {
+		margin: 0 0 0.45rem;
+		font-family: var(--beta-display);
+		font-size: clamp(1.35rem, 2vw, 1.7rem);
+		font-weight: 600;
+		letter-spacing: -0.03em;
+		color: var(--beta-text);
+	}
+
+	.beta-speaker-panel__session {
+		margin: 0;
+		font-size: 1rem;
+		font-weight: 600;
+		line-height: 1.35;
+		text-wrap: balance;
+		color: var(--beta-text);
+	}
+
+	.beta-speaker-panel__role {
+		margin: 0.35rem 0 0;
+		font-size: 0.95rem;
+		color: var(--beta-text-dim);
+	}
+
+	.beta-speaker-panel__photo {
+		display: grid;
+		place-items: center;
+		width: min(70%, 11rem);
+		aspect-ratio: 1;
+		border-radius: 22px;
+		border: 1px dashed var(--beta-line);
+		background:
+			radial-gradient(circle at 30% 20%, rgba(91, 136, 255, 0.18), transparent 60%),
+			rgba(8, 11, 24, 0.35);
+		overflow: hidden;
+	}
+
+	.beta-speaker-panel__photo img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
+
+	.beta-speaker-panel__placeholder {
+		font-size: 0.85rem;
+		letter-spacing: 0.04em;
+		color: var(--beta-text-faint);
+	}
+
+	.beta-speaker-panel__bio {
+		margin: 0;
+		max-width: 32ch;
+		font-size: 0.95rem;
+		line-height: 1.5;
+		color: var(--beta-text-dim);
+		text-wrap: pretty;
+	}
+
+	@media (max-width: 860px) {
+		.beta-speaker-stage {
+			grid-template-columns: 1fr;
+		}
+
+		.beta-speaker-stage:has(.beta-speaker-panel:hover) .beta-speaker-panel:not(:hover),
+		.beta-speaker-stage:has(.beta-speaker-panel:focus-visible) .beta-speaker-panel:not(:focus-visible) {
+			opacity: 1;
+			filter: none;
+			transform: none;
+		}
+	}
+</style>

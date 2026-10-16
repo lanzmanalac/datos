@@ -1,0 +1,433 @@
+---
+import { event } from '../../content/event';
+import { registration } from '../../content/registration';
+import { identicon } from '../../lib/chain';
+
+const status = registration.statusCopy[registration.status];
+const passArt = identicon(`${event.name}:pass`);
+
+const receipt = [
+	{ label: 'Date', value: event.dateLabel },
+	{ label: 'Venue', value: event.venueLabel },
+	{ label: 'City', value: event.cityLabel },
+	{ label: 'Seats', value: '60–80' },
+	{ label: 'Issued via', value: 'Meetup' },
+];
+---
+
+<section class="beta-band" id="register" aria-labelledby="register-mark" tabindex="-1">
+	<div class="beta-wrap">
+		<p class="beta-mark beta-reveal" id="register-mark" data-text="Register">Register</p>
+		<div class="register">
+		<article class="beta-glass register__copy beta-reveal" data-spotlight>
+			<h2 class="register__title">Get notified for {event.name}</h2>
+			<p class="beta-lede">
+				{status.banner}. Get notified on Meetup when the Data Engineering Pilipinas group opens registration.{' '}
+				{event.capacityNote}
+			</p>
+
+			<div class="register__cta">
+				{
+					status.ctaEnabled ? (
+						<a class="beta-btn beta-btn--primary" href={registration.meetupUrl} rel="noopener noreferrer" target="_blank">
+							{status.ctaLabel}
+							<span class="beta-btn__arrow" aria-hidden="true">↗</span>
+						</a>
+					) : (
+						<span class="beta-btn beta-btn--primary" aria-disabled="true">
+							<span class="beta-live" aria-hidden="true" />
+							{status.ctaLabel}
+						</span>
+					)
+				}
+				<a class="beta-btn" href={registration.meetupUrl} rel="noopener noreferrer" target="_blank">
+					Get notified on Meetup
+					<span class="beta-btn__arrow" aria-hidden="true">↗</span>
+				</a>
+			</div>
+
+			<dl class="receipt">
+				{
+					receipt.map((row) => (
+						<div class="receipt__row">
+							<dt>{row.label}</dt>
+							<dd>{row.value}</dd>
+						</div>
+					))
+				}
+			</dl>
+			<div class="register__rings" aria-hidden="true">
+				<span></span><span></span><span></span>
+			</div>
+		</article>
+
+		<div class="register__stage beta-reveal" style="--d: 120ms">
+			<div class="pass" data-pass tabindex="0" aria-label={`${event.name} conference pass preview. ${status.banner}.`}>
+				<div class="pass__foil" aria-hidden="true"></div>
+				<div class="pass__glare" aria-hidden="true"></div>
+
+				<div class="pass__top">
+					<span class="pass__brand">{event.name}</span>
+					<span class="pass__status">
+						<span class="beta-live" aria-hidden="true"></span>
+						{status.banner.replace('Registration ', '')}
+					</span>
+				</div>
+
+				<svg class="pass__art" viewBox="0 0 5 5" aria-hidden="true">
+					{passArt.map((cell) => <rect x={cell.x + 0.06} y={cell.y + 0.06} width="0.88" height="0.88" rx="0.18" fill={cell.fill} />)}
+				</svg>
+
+				<div class="pass__bottom">
+					<div>
+						<p class="pass__label">Admit one</p>
+						<p class="pass__value">60 to 80 seats</p>
+					</div>
+					<div class="pass__right">
+						<p class="pass__label">Network</p>
+						<p class="pass__value">DEP</p>
+					</div>
+				</div>
+				<p class="pass__hint" aria-hidden="true">{event.organizer} · {event.cityLabel}</p>
+			</div>
+		</div>
+		</div>
+	</div>
+</section>
+
+<style>
+	.register {
+		display: grid;
+		grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+		gap: clamp(2.5rem, 6vw, 5rem);
+		align-items: center;
+	}
+
+	.register__copy {
+		position: relative;
+		isolation: isolate;
+		overflow: hidden;
+		padding: clamp(1.5rem, 3vw, 2.25rem);
+		border-radius: var(--beta-radius-lg);
+		background:
+			radial-gradient(120% 90% at 100% 0%, rgba(30, 86, 240, 0.28), transparent 55%),
+			linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.012) 60%),
+			rgba(8, 11, 24, 0.55);
+	}
+
+	:global(.beta.alpha) .register__copy {
+		background:
+			radial-gradient(120% 90% at 100% 0%, rgba(30, 86, 240, 0.34), transparent 58%),
+			linear-gradient(180deg, rgba(255, 255, 255, 0.72), rgba(255, 255, 255, 0.42) 60%),
+			rgba(255, 255, 255, 0.32);
+	}
+
+	.register__copy > :not(.register__rings) {
+		position: relative;
+		z-index: 1;
+	}
+
+	.register__copy .register__title {
+		max-width: 14ch;
+		margin: 0 0 1.25rem;
+		font-family: var(--beta-display);
+		font-weight: 600;
+		font-size: clamp(1.65rem, 2.6vw, 2.35rem);
+		line-height: 1.05;
+		letter-spacing: -0.04em;
+		text-wrap: balance;
+		text-shadow: none;
+		background-image: var(--beta-chrome);
+		background-color: transparent;
+		-webkit-background-clip: text;
+		background-clip: text;
+		color: transparent;
+		-webkit-text-fill-color: transparent;
+	}
+
+	.register__copy .beta-lede {
+		margin-bottom: 0;
+	}
+
+	.register__rings {
+		position: absolute;
+		top: -6rem;
+		right: -6rem;
+		width: 22rem;
+		aspect-ratio: 1;
+		pointer-events: none;
+		z-index: 0;
+	}
+
+	.register__rings span {
+		position: absolute;
+		inset: 0;
+		border-radius: 50%;
+		border: 1px solid rgba(143, 179, 255, 0.22);
+	}
+
+	.register__rings span:nth-child(2) {
+		inset: 3.5rem;
+		border-color: rgba(143, 179, 255, 0.32);
+	}
+
+	.register__rings span:nth-child(3) {
+		inset: 7rem;
+		border: none;
+		background: radial-gradient(circle, rgba(30, 86, 240, 0.62), transparent 70%);
+		filter: blur(10px);
+	}
+
+	.register__cta {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.75rem;
+		margin: 1.75rem 0 2.25rem;
+	}
+
+	.receipt {
+		margin: 0;
+		max-width: none;
+		border-top: 1px dashed var(--beta-line);
+	}
+
+	.receipt__row {
+		display: flex;
+		align-items: baseline;
+		gap: 0.75rem;
+		padding: 0.7rem 0;
+		border-bottom: 1px dashed var(--beta-line-faint);
+		font-size: 0.9rem;
+	}
+
+	.receipt__row dt {
+		color: var(--beta-text-dim);
+	}
+
+	.receipt__row::after {
+		content: '';
+		order: 1;
+		flex: 1;
+		border-bottom: 1px dotted rgba(143, 179, 255, 0.18);
+		transform: translateY(-0.25em);
+	}
+
+	.receipt__row dd {
+		order: 2;
+		margin: 0;
+		font-family: var(--beta-mono);
+		font-variant-numeric: tabular-nums;
+		color: var(--beta-text);
+	}
+
+	.register__stage {
+		display: grid;
+		place-items: center;
+		perspective: 1100px;
+	}
+
+	.pass {
+		--rx: 0deg;
+		--ry: 0deg;
+		--px: 50%;
+		--py: 50%;
+		position: relative;
+		isolation: isolate;
+		display: flex;
+		flex-direction: column;
+		justify-content: space-between;
+		gap: 1.5rem;
+		width: min(100%, 23rem);
+		aspect-ratio: 5 / 7;
+		padding: 1.6rem;
+		border-radius: 26px;
+		overflow: hidden;
+		background:
+			radial-gradient(120% 80% at 0% 0%, rgba(91, 136, 255, 0.35), transparent 55%),
+			radial-gradient(100% 80% at 100% 100%, rgba(166, 255, 240, 0.12), transparent 55%),
+			linear-gradient(160deg, #0d1430 0%, #070a18 55%, #04050c 100%);
+		border: 1px solid rgba(201, 216, 255, 0.22);
+		box-shadow:
+			0 1px 0 rgba(255, 255, 255, 0.12) inset,
+			0 50px 100px -30px rgba(10, 40, 160, 0.65),
+			0 0 0 1px rgba(0, 0, 0, 0.4);
+		transform: rotateX(var(--rx)) rotateY(var(--ry));
+		transform-style: preserve-3d;
+		transition: transform 500ms var(--beta-ease);
+		outline: none;
+	}
+
+	.pass.is-tilting {
+		transition: transform 80ms linear;
+	}
+
+	.pass:focus-visible {
+		box-shadow:
+			0 0 0 2px var(--beta-accent-bright),
+			0 50px 100px -30px rgba(10, 40, 160, 0.65);
+	}
+
+	.pass__foil {
+		position: absolute;
+		inset: 0;
+		z-index: -1;
+		background: conic-gradient(from var(--beta-holo-angle), var(--beta-holo-stops));
+		opacity: 0.16;
+		mix-blend-mode: color-dodge;
+		mask-image: repeating-linear-gradient(
+			115deg,
+			#000 0 2px,
+			transparent 2px 7px
+		);
+		-webkit-mask-image: repeating-linear-gradient(
+			115deg,
+			#000 0 2px,
+			transparent 2px 7px
+		);
+		animation: beta-holo-spin 10s linear infinite;
+		transition: opacity 400ms var(--beta-ease);
+	}
+
+	.pass:hover .pass__foil,
+	.pass:focus-visible .pass__foil {
+		opacity: 0.38;
+	}
+
+	.pass__glare {
+		position: absolute;
+		inset: 0;
+		z-index: -1;
+		background: radial-gradient(
+			circle at var(--px) var(--py),
+			rgba(255, 255, 255, 0.22),
+			transparent 45%
+		);
+		mix-blend-mode: overlay;
+		opacity: 0;
+		transition: opacity 400ms var(--beta-ease);
+	}
+
+	.pass:hover .pass__glare {
+		opacity: 1;
+	}
+
+	.pass__top,
+	.pass__bottom {
+		display: flex;
+		justify-content: space-between;
+		align-items: flex-start;
+		gap: 1rem;
+		transform: translateZ(30px);
+	}
+
+	.pass__brand {
+		font-family: var(--beta-display);
+		font-weight: 800;
+		font-size: 1.35rem;
+		letter-spacing: -0.03em;
+		background: var(--beta-chrome);
+		-webkit-background-clip: text;
+		background-clip: text;
+		color: transparent;
+	}
+
+	.pass__status {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.45rem;
+		padding: 0.35rem 0.7rem;
+		border: 1px solid rgba(124, 245, 212, 0.3);
+		border-radius: 999px;
+		background: rgba(124, 245, 212, 0.06);
+		font-family: var(--beta-mono);
+		font-size: 0.7rem;
+		color: #b9fbe9;
+		white-space: nowrap;
+	}
+
+	.pass__art {
+		width: 56%;
+		align-self: center;
+		filter: drop-shadow(0 0 24px rgba(30, 86, 240, 0.55));
+		transform: translateZ(50px);
+	}
+
+	.pass__label {
+		margin: 0 0 0.25rem;
+		font-family: var(--beta-mono);
+		font-size: 0.66rem;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: var(--beta-text-faint);
+	}
+
+	.pass__value {
+		margin: 0;
+		font-family: var(--beta-mono);
+		font-size: 0.86rem;
+		color: var(--beta-text);
+	}
+
+	.pass__right {
+		text-align: right;
+	}
+
+	.pass__hint {
+		margin: -0.75rem 0 0;
+		padding-top: 0.85rem;
+		border-top: 1px dashed rgba(201, 216, 255, 0.14);
+		font-family: var(--beta-mono);
+		font-size: 0.6rem;
+		letter-spacing: 0.08em;
+		color: var(--beta-text-faint);
+		text-align: center;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.pass,
+		.pass.is-tilting {
+			transform: none;
+			transition: none;
+		}
+
+		.pass__foil {
+			animation: none;
+		}
+	}
+
+	@media (max-width: 900px) {
+		.register {
+			grid-template-columns: 1fr;
+		}
+
+		.register__stage {
+			order: -1;
+		}
+	}
+</style>
+
+<script>
+	const pass = document.querySelector<HTMLElement>('[data-pass]');
+	const canTilt =
+		window.matchMedia('(hover: hover)').matches &&
+		!window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+	if (pass && canTilt) {
+		pass.addEventListener('pointermove', (event) => {
+			const rect = pass.getBoundingClientRect();
+			const x = (event.clientX - rect.left) / rect.width;
+			const y = (event.clientY - rect.top) / rect.height;
+			pass.classList.add('is-tilting');
+			pass.style.setProperty('--ry', `${(x - 0.5) * 18}deg`);
+			pass.style.setProperty('--rx', `${(0.5 - y) * 18}deg`);
+			pass.style.setProperty('--px', `${x * 100}%`);
+			pass.style.setProperty('--py', `${y * 100}%`);
+		});
+
+		pass.addEventListener('pointerleave', () => {
+			pass.classList.remove('is-tilting');
+			pass.style.setProperty('--rx', '0deg');
+			pass.style.setProperty('--ry', '0deg');
+		});
+	}
+</script>

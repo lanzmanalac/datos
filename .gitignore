@@ -1,0 +1,33 @@
+# build output
+dist/
+# generated types
+.astro/
+
+# dependencies
+node_modules/
+
+# logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# environment variables
+.env
+.env.production
+
+# macOS-specific files
+.DS_Store
+
+# jetbrains setting folder
+.idea/
+
+# local design experiments / tooling (not part of the shipped beta site)
+.agents/
+.superdesign/
+backups/
+extra-escape/
+docs/
+skills-lock.json
+CLAUDE.md
+AGENTS.md
