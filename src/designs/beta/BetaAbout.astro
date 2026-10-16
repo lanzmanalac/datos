@@ -237,8 +237,8 @@ const stats = [
 		padding-block: 1.35rem;
 		background:
 			radial-gradient(120% 140% at 100% 100%, rgba(30, 86, 240, 0.28), transparent 55%),
-			linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.012) 60%),
-			rgba(8, 11, 24, 0.55);
+			linear-gradient(180deg, var(--beta-glass-strong), var(--beta-glass) 60%),
+			var(--beta-surface-ink);
 	}
 
 	.about-tile--dep p,
@@ -262,7 +262,7 @@ const stats = [
 		height: 2.55rem;
 		border: 1px solid var(--beta-line);
 		border-radius: 14px;
-		background: rgba(255, 255, 255, 0.04);
+		background: var(--beta-fill-04);
 		color: var(--beta-text);
 		transition:
 			border-color 200ms var(--beta-ease),

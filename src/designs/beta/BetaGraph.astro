@@ -10,45 +10,68 @@
 		pointer-events: none;
 		opacity: 1;
 	}
-
-	.beta.alpha .beta-graph {
-		opacity: 1;
-	}
 </style>
 
 <script>
+	import { readTheme, subscribeTheme, type Theme, type ThemeName } from './theme';
+
 	type GraphNode = { x: number; y: number; vx: number; vy: number; r: number };
 	type Packet = { a: number; b: number; t: number; speed: number };
+
+	type GraphPalette = {
+		line: (alpha: number) => string;
+		pointer: (alpha: number) => string;
+		nodeBig: string;
+		nodeSmall: string;
+		packetCore: string;
+		packetEdge: string;
+		lineMax: number;
+		pointerMax: number;
+		linkDistance: number;
+		density: number;
+		strokeWidth: number;
+	};
+
+	const GRAPH_BY_THEME: Record<ThemeName, GraphPalette> = {
+		dark: {
+			line: (a) => `rgba(110, 150, 255, ${a})`,
+			pointer: (a) => `rgba(166, 255, 240, ${a})`,
+			nodeBig: 'rgba(201, 216, 255, 0.95)',
+			nodeSmall: 'rgba(110, 150, 255, 0.72)',
+			packetCore: 'rgba(201, 230, 255, 0.95)',
+			packetEdge: 'rgba(91, 136, 255, 0)',
+			lineMax: 0.24,
+			pointerMax: 0.35,
+			linkDistance: 150,
+			density: 14000,
+			strokeWidth: 1,
+		},
+		light: {
+			line: (a) => `rgba(30, 86, 240, ${a})`,
+			pointer: (a) => `rgba(14, 116, 144, ${a})`,
+			nodeBig: 'rgba(30, 86, 240, 0.88)',
+			nodeSmall: 'rgba(59, 110, 230, 0.72)',
+			packetCore: 'rgba(30, 86, 240, 0.95)',
+			packetEdge: 'rgba(30, 86, 240, 0)',
+			lineMax: 0.42,
+			pointerMax: 0.4,
+			linkDistance: 168,
+			density: 11000,
+			strokeWidth: 1.15,
+		},
+	};
+
+	function paletteFor(theme: Theme): GraphPalette {
+		return GRAPH_BY_THEME[theme.name];
+	}
 
 	const canvas = document.querySelector<HTMLCanvasElement>('[data-beta-graph]');
 	const ctx = canvas?.getContext('2d');
 
 	if (canvas && ctx) {
 		const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-		const light = document.body.classList.contains('alpha');
-		const LINK = light ? 168 : 150;
+		let palette = paletteFor(readTheme());
 		const POINTER = 200;
-		const palette = light
-			? {
-					line: (a: number) => `rgba(30, 86, 240, ${a})`,
-					pointer: (a: number) => `rgba(14, 116, 144, ${a})`,
-					nodeBig: 'rgba(30, 86, 240, 0.88)',
-					nodeSmall: 'rgba(59, 110, 230, 0.72)',
-					packetCore: 'rgba(30, 86, 240, 0.95)',
-					packetEdge: 'rgba(30, 86, 240, 0)',
-					lineMax: 0.42,
-					pointerMax: 0.4,
-				}
-			: {
-					line: (a: number) => `rgba(110, 150, 255, ${a})`,
-					pointer: (a: number) => `rgba(166, 255, 240, ${a})`,
-					nodeBig: 'rgba(201, 216, 255, 0.95)',
-					nodeSmall: 'rgba(110, 150, 255, 0.72)',
-					packetCore: 'rgba(201, 230, 255, 0.95)',
-					packetEdge: 'rgba(91, 136, 255, 0)',
-					lineMax: 0.24,
-					pointerMax: 0.35,
-				};
 
 		let w = 0;
 		let h = 0;
@@ -66,8 +89,7 @@
 			canvas.width = Math.round(w * dpr);
 			canvas.height = Math.round(h * dpr);
 			ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-			const density = light ? 11000 : 14000;
-			const count = Math.round(Math.min(130, Math.max(40, (w * h) / density)));
+			const count = Math.round(Math.min(130, Math.max(40, (w * h) / palette.density)));
 			nodes = Array.from({ length: count }, () => ({
 				x: Math.random() * w,
 				y: Math.random() * h,
@@ -78,7 +100,8 @@
 			packets = [];
 		};
 
-		const linked = (a: GraphNode, b: GraphNode) => Math.hypot(a.x - b.x, a.y - b.y) < LINK;
+		const linked = (a: GraphNode, b: GraphNode) =>
+			Math.hypot(a.x - b.x, a.y - b.y) < palette.linkDistance;
 
 		const draw = (time: number) => {
 			ctx.clearRect(0, 0, w, h);
@@ -101,14 +124,14 @@
 				}
 			}
 
-			ctx.lineWidth = light ? 1.15 : 1;
+			ctx.lineWidth = palette.strokeWidth;
 			for (let i = 0; i < nodes.length; i++) {
 				for (let j = i + 1; j < nodes.length; j++) {
 					const a = nodes[i];
 					const b = nodes[j];
 					const d = Math.hypot(a.x - b.x, a.y - b.y);
-					if (d >= LINK) continue;
-					ctx.strokeStyle = palette.line((1 - d / LINK) * palette.lineMax);
+					if (d >= palette.linkDistance) continue;
+					ctx.strokeStyle = palette.line((1 - d / palette.linkDistance) * palette.lineMax);
 					ctx.beginPath();
 					ctx.moveTo(a.x, a.y);
 					ctx.lineTo(b.x, b.y);
@@ -177,6 +200,12 @@
 		resize();
 		draw(0);
 		if (!reduce) start();
+
+		subscribeTheme((theme) => {
+			palette = paletteFor(theme);
+			resize();
+			draw(0);
+		});
 
 		let resizeTimer = 0;
 		window.addEventListener('resize', () => {
