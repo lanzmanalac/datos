@@ -12,6 +12,7 @@ import '@fontsource/ibm-plex-mono/400.css';
 import '@fontsource/ibm-plex-mono/500.css';
 import './beta.css';
 import BetaGraph from './BetaGraph.astro';
+import ThemeBoot from './ThemeBoot.astro';
 
 interface Props {
 	title: string;
@@ -22,7 +23,7 @@ const { title, description } = Astro.props;
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 	<head>
 		<meta charset="utf-8" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
@@ -32,6 +33,7 @@ const { title, description } = Astro.props;
 		<meta property="og:title" content={title} />
 		<meta property="og:description" content={description} />
 		<title>{title}</title>
+		<ThemeBoot />
 	</head>
 	<body class="beta">
 		<a class="beta-skip" href="#main">Skip to content</a>

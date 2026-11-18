@@ -62,8 +62,8 @@ import { speakersPreview } from '../../content/speakers';
 		border-radius: var(--beta-radius-lg);
 		border: 1px solid var(--beta-glass-border);
 		background:
-			linear-gradient(180deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.01) 55%),
-			rgba(8, 11, 24, 0.55);
+			linear-gradient(180deg, var(--beta-glass-strong), var(--beta-glass) 55%),
+			var(--beta-surface-ink);
 		backdrop-filter: blur(16px);
 		-webkit-backdrop-filter: blur(16px);
 		box-shadow: var(--beta-shadow);
@@ -147,7 +147,7 @@ import { speakersPreview } from '../../content/speakers';
 		border: 1px dashed var(--beta-line);
 		background:
 			radial-gradient(circle at 30% 20%, rgba(91, 136, 255, 0.18), transparent 60%),
-			rgba(8, 11, 24, 0.35);
+			var(--beta-surface-ink-soft);
 		overflow: hidden;
 	}
 

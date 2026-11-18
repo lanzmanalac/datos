@@ -1,0 +1,96 @@
+---
+interface Props {
+	class?: string;
+}
+
+const { class: className } = Astro.props;
+---
+
+<button
+	type="button"
+	class:list={['beta-theme-toggle', className]}
+	data-theme-toggle
+	aria-label="Switch to light theme"
+>
+	<span class="beta-theme-toggle__icon" aria-hidden="true"></span>
+</button>
+
+<style is:global>
+	.beta-theme-toggle {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: var(--beta-dock-h);
+		height: var(--beta-dock-h);
+		border: 1px solid var(--beta-line);
+		border-radius: 999px;
+		background: var(--beta-dock-bg);
+		backdrop-filter: blur(16px);
+		-webkit-backdrop-filter: blur(16px);
+		color: var(--beta-text);
+		cursor: pointer;
+		transition:
+			background-color 180ms var(--beta-ease),
+			border-color 180ms var(--beta-ease),
+			transform 160ms var(--beta-spring);
+	}
+
+	.beta-theme-toggle:hover {
+		border-color: rgba(170, 196, 255, 0.45);
+	}
+
+	.beta-theme-toggle:active {
+		transform: scale(0.96);
+	}
+
+	.beta-theme-toggle__icon {
+		display: block;
+		width: 1rem;
+		height: 1rem;
+		border-radius: 50%;
+		background: currentColor;
+		box-shadow: inset -0.28rem -0.1rem 0 0 var(--beta-dock-bg);
+		transition: box-shadow 220ms var(--beta-ease), border-radius 220ms var(--beta-ease);
+	}
+
+	.beta-theme-toggle[data-theme-current='light'] .beta-theme-toggle__icon {
+		box-shadow: none;
+		background: transparent;
+		border: 2px solid currentColor;
+		box-sizing: border-box;
+	}
+</style>
+
+<script>
+	import { readTheme, subscribeTheme, toggleTheme } from './theme';
+
+	function labelFor(destination: 'dark' | 'light'): string {
+		return destination === 'light' ? 'Switch to light theme' : 'Switch to dark theme';
+	}
+
+	function syncButtons() {
+		const theme = readTheme();
+		const next = theme.name === 'dark' ? 'light' : 'dark';
+		document.querySelectorAll<HTMLButtonElement>('[data-theme-toggle]').forEach((button) => {
+			button.setAttribute('aria-label', labelFor(next));
+			button.dataset.themeCurrent = theme.name;
+		});
+	}
+
+	function bind() {
+		if (document.documentElement.dataset.themeToggleBound === '1') return;
+		document.documentElement.dataset.themeToggleBound = '1';
+
+		document.querySelectorAll<HTMLButtonElement>('[data-theme-toggle]').forEach((button) => {
+			button.addEventListener('click', (event) => {
+				event.preventDefault();
+				toggleTheme();
+			});
+		});
+
+		subscribeTheme(syncButtons);
+		syncButtons();
+	}
+
+	bind();
+</script>

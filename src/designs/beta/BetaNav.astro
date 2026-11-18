@@ -1,6 +1,7 @@
 ---
 import { event } from '../../content/event';
 import { sectionHref } from '../../lib/site-path';
+import ThemeToggle from './ThemeToggle.astro';
 
 interface Props {
 	home?: string;
@@ -32,16 +33,19 @@ const links = [
 			))
 		}
 	</nav>
-	<button
-		type="button"
-		class="beta-nav__toggle"
-		data-beta-nav-toggle
-		aria-expanded="false"
-		aria-controls="beta-nav-sheet"
-		aria-label="Open menu"
-	>
-		<span aria-hidden="true"></span>
-	</button>
+	<div class="beta-nav__end">
+		<ThemeToggle />
+		<button
+			type="button"
+			class="beta-nav__toggle"
+			data-beta-nav-toggle
+			aria-expanded="false"
+			aria-controls="beta-nav-sheet"
+			aria-label="Open menu"
+		>
+			<span aria-hidden="true"></span>
+		</button>
+	</div>
 </header>
 
 <div class="beta-nav-sheet" id="beta-nav-sheet" data-beta-nav-sheet aria-hidden="true">
